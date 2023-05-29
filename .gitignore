@@ -12,7 +12,7 @@ cosign.key
 *.dll
 *.so
 *.dylib
-./finas
+finas
 
 # Test binary, built with `go test -c`
 *.test
