@@ -1,7 +1,7 @@
 # setup project and deps
 FROM golang:1.20-bullseye AS init
 
-WORKDIR /go/golang-starter/
+WORKDIR /go/finas/
 
 COPY go.mod* go.sum* ./
 RUN go mod download
@@ -19,11 +19,11 @@ RUN go test -coverprofile c.out -v ./...
 FROM init as build
 ARG LDFLAGS
 
-RUN CGO_ENABLED=0 go build -ldflags="${LDFLAGS}" ./cmd/golang-starter/
+RUN CGO_ENABLED=0 go build -ldflags="${LDFLAGS}" ./cmd/finas/
 
 # runtime image
 FROM scratch
 # Copy our static executable.
-COPY --from=build /go/golang-starter/golang-starter /go/bin/golang-starter
+COPY --from=build /go/finas/finas /go/bin/finas
 # Run the binary.
-ENTRYPOINT ["/go/bin/golang-starter"]
+ENTRYPOINT ["/go/bin/finas"]

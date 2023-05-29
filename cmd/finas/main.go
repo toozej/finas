@@ -6,10 +6,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/toozej/golang-starter/internal/math"
-	"github.com/toozej/golang-starter/pkg/config"
-	"github.com/toozej/golang-starter/pkg/man"
-	"github.com/toozej/golang-starter/pkg/version"
+	"github.com/toozej/finas/internal/math"
+	"github.com/toozej/finas/pkg/config"
+	"github.com/toozej/finas/pkg/man"
+	"github.com/toozej/finas/pkg/version"
 )
 
 func main() {
@@ -19,7 +19,7 @@ func main() {
 	}
 
 	command := &cobra.Command{
-		Use:   "golang-starter",
+		Use:   "finas",
 		Short: "golang starter examples",
 		Long:  `Examples of using math library, cobra and viper modules in golang`,
 		Run: func(cmd *cobra.Command, args []string) {

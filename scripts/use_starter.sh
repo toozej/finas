@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-OLD_PROJECT_NAME="golang-starter"
+OLD_PROJECT_NAME="finas"
 NEW_PROJECT_NAME="${1}"
 GITHUB_USERNAME="${2:-toozej}"
 
@@ -9,10 +9,10 @@ GIT_REPO_ROOT=$(git rev-parse --show-toplevel)
 cd "${GIT_REPO_ROOT}"
 
 # truncate existing CREDITS.md file and replace its contents with link to template repo's CREDITS.md file
-echo -e "# Credits and Acknowledgements\n\n- https://raw.githubusercontent.com/toozej/dinnerclub/main/CREDITS.md" > CREDITS.md
+echo -e "# Credits and Acknowledgements\n\n- https://raw.githubusercontent.com/toozej/finas/main/CREDITS.md" > CREDITS.md
 
-# remove golang-starter.pub key
-rm -f ./golang-starter.pub
+# remove finas.pub key
+rm -f ./finas.pub
 
 # update go module name
 # shellcheck disable=SC2086

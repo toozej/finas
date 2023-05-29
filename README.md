@@ -1,4 +1,4 @@
-# golang-starter
+# finas
 Golang starter template
 
 ## features of this starter template
@@ -49,7 +49,7 @@ Golang starter template
     - (DockerHub and GitHub Container Registry do this automatically on first push/publish)
     - name must match Git repo name
     - grant robot user with username stored in QUAY_USERNAME "write" permissions (your quay.io account should already have admin permissions)
-- find/replace golang-starter to new repo name
+- find/replace finas to new repo name
     - run `./scripts/use_starter.sh $NEW_PROJECT_NAME_GOES_HERE`
     - to rename with a different GitHub username `./scripts/use_starter.sh $NEW_PROJECT_NAME_GOES_HERE $GITHUB_USERNAME_GOES_HERE`
 - set built packages visibility in GitHub packages to public
