@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
+	"reflect"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -49,6 +51,7 @@ func cmdPaths(additionalPaths []string) ([]string, error) {
 // LoadCmds loads Docker Run cmds from JSON files
 // located in cmdPaths in order of preference
 func LoadCmds(additionalPaths ...string) error {
+	CmdMap := make(map[string]DockerCmd)
 	v := viper.New()
 
 	directories, _ := cmdPaths(additionalPaths)
@@ -57,14 +60,21 @@ func LoadCmds(additionalPaths ...string) error {
 	for _, dir := range directories {
 		files, err := ioutil.ReadDir(dir)
 		if err != nil {
-			fmt.Printf("Error reading directory '%s': %s\n", dir, err)
-			continue
+			if os.IsNotExist(err) {
+				fmt.Printf("Directory not found, continuing: %s\n", dir)
+				continue
+			} else {
+				fmt.Printf("Error reading directory '%s': %s\n", dir, err)
+				continue
+			}
 		}
 
 		// Iterate over files in the current directory
 		for _, file := range files {
 			if strings.HasSuffix(file.Name(), ".json") {
 				filePath := filepath.Join(dir, file.Name())
+				fileName := path.Base(filePath)
+				fileNameWithoutExt := fileName[:len(fileName)-len(filepath.Ext(fileName))]
 
 				// Set Viper to read the JSON file
 				v.SetConfigFile(filePath)
@@ -83,9 +93,22 @@ func LoadCmds(additionalPaths ...string) error {
 					continue
 				}
 
-				// Store the loaded struct in the map
-				CmdMap[filePath] = cmd
+				// Store the loaded struct in the map at key based on filename
+				CmdMap[fileNameWithoutExt] = cmd
 			}
+		}
+	}
+	fmt.Printf("CmdMap currently contains: %v\n", CmdMap)
+	for key, cmd := range CmdMap {
+		// Get the type of the struct
+		t := reflect.TypeOf(cmd)
+
+		// Iterate over the fields
+		for i := 0; i < t.NumField(); i++ {
+			field := t.Field(i)
+			value := reflect.ValueOf(cmd).Field(i).Interface()
+
+			fmt.Printf("Key: %s, Field: %s, Type: %s, Value: %v\n", key, field.Name, reflect.TypeOf(field), value)
 		}
 	}
 
