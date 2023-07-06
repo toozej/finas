@@ -1,6 +1,0 @@
-# runtime image
-FROM scratch
-# Copy our static executable.
-COPY finas /go/bin/finas
-# Run the binary.
-ENTRYPOINT ["/go/bin/finas"]

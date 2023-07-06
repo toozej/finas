@@ -1,4 +1,6 @@
 ---
+project_name: finas
+
 env:
   - GO111MODULE=on
 
@@ -36,6 +38,7 @@ builds:
       - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{ .CommitDate
         }} -X main.builtBy=goreleaser
     main: ./cmd/finas/
+    binary: finas
 
 universal_binaries:
   - replace: false
@@ -71,118 +74,6 @@ changelog:
     - title: Other work
       order: 9999
 
-dockers:
-  - image_templates:
-      - 'toozej/finas:{{ .Tag }}-amd64'
-      - 'ghcr.io/toozej/finas:{{ .Tag }}-amd64'
-      - 'quay.io/toozej/finas:{{ .Tag }}-amd64'
-    dockerfile: Dockerfile.goreleaser
-    use: buildx
-    build_flag_templates:
-      - "--pull"
-      - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/toozej/finas/main/README.md"
-      - "--label=io.artifacthub.package.maintainers=[{\"name\":\"toozej\"}]"
-      - "--label=io.artifacthub.package.license=GPLv3"
-      - "--label=org.opencontainers.image.description=Golang starter template"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/amd64"
-    extra_files:
-      - scripts/goreleaser_entrypoint.sh
-  - image_templates:
-      - 'toozej/finas:{{ .Tag }}-arm64'
-      - 'ghcr.io/toozej/finas:{{ .Tag }}-arm64'
-      - 'quay.io/toozej/finas:{{ .Tag }}-arm64'
-    dockerfile: Dockerfile.goreleaser
-    use: buildx
-    build_flag_templates:
-      - "--pull"
-      - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/toozej/finas/main/README.md"
-      - "--label=io.artifacthub.package.maintainers=[{\"name\":\"toozej\"}]"
-      - "--label=io.artifacthub.package.license=GPLv3"
-      - "--label=org.opencontainers.image.description=Golang starter template"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/arm64"
-    goarch: arm64
-    extra_files:
-      - scripts/goreleaser_entrypoint.sh
-  - image_templates:
-      - 'toozej/finas:{{ .Tag }}-distroless-amd64'
-      - 'ghcr.io/toozej/finas:{{ .Tag }}-distroless-amd64'
-      - 'quay.io/toozej/finas:{{ .Tag }}-distroless-amd64'
-    dockerfile: Dockerfile.goreleaser.distroless
-    use: buildx
-    build_flag_templates:
-      - "--pull"
-      - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/toozej/finas/main/README.md"
-      - "--label=io.artifacthub.package.maintainers=[{\"name\":\"toozej\"}]"
-      - "--label=io.artifacthub.package.license=GPLv3"
-      - "--label=org.opencontainers.image.description=Golang starter template"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/amd64"
-    extra_files:
-      - scripts/goreleaser_entrypoint.sh
-  - image_templates:
-      - 'toozej/finas:{{ .Tag }}-distroless-arm64'
-      - 'ghcr.io/toozej/finas:{{ .Tag }}-distroless-arm64'
-      - 'quay.io/toozej/finas:{{ .Tag }}-distroless-arm64'
-    dockerfile: Dockerfile.goreleaser.distroless
-    use: buildx
-    build_flag_templates:
-      - "--pull"
-      - "--label=io.artifacthub.package.readme-url=https://raw.githubusercontent.com/toozej/finas/main/README.md"
-      - "--label=io.artifacthub.package.maintainers=[{\"name\":\"toozej\"}]"
-      - "--label=io.artifacthub.package.license=GPLv3"
-      - "--label=org.opencontainers.image.description=Golang starter template"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.name={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-      - "--label=org.opencontainers.image.source={{.GitURL}}"
-      - "--platform=linux/arm64"
-    goarch: arm64
-    extra_files:
-      - scripts/goreleaser_entrypoint.sh
-
-docker_manifests:
-  # tagged
-  - name_template: 'toozej/finas:{{ .Tag }}'
-    image_templates:
-      - 'toozej/finas:{{ .Tag }}-amd64'
-      - 'toozej/finas:{{ .Tag }}-arm64'
-  - name_template: 'ghcr.io/toozej/finas:{{ .Tag }}'
-    image_templates:
-      - 'ghcr.io/toozej/finas:{{ .Tag }}-amd64'
-      - 'ghcr.io/toozej/finas:{{ .Tag }}-arm64'
-  - name_template: 'quay.io/toozej/finas:{{ .Tag }}'
-    image_templates:
-      - 'quay.io/toozej/finas:{{ .Tag }}-amd64'
-      - 'quay.io/toozej/finas:{{ .Tag }}-arm64'
-  # latest
-  - name_template: 'toozej/finas:latest'
-    image_templates:
-      - 'toozej/finas:{{ .Tag }}-amd64'
-      - 'toozej/finas:{{ .Tag }}-arm64'
-  - name_template: 'ghcr.io/toozej/finas:latest'
-    image_templates:
-      - 'ghcr.io/toozej/finas:{{ .Tag }}-amd64'
-      - 'ghcr.io/toozej/finas:{{ .Tag }}-arm64'
-  - name_template: 'quay.io/toozej/finas:latest'
-    image_templates:
-      - 'quay.io/toozej/finas:{{ .Tag }}-amd64'
-      - 'quay.io/toozej/finas:{{ .Tag }}-arm64'
-
 archives:
   - name_template: >-
       {{ .ProjectName }}_
@@ -204,7 +95,7 @@ nfpms:
     id: packages
     homepage: https://github.com/toozej/finas
     description: |-
-      Golang starter template
+      FINAS Is Not A Shell
     maintainer: toozej
     license: GPLv3
     vendor: finas
@@ -253,20 +144,11 @@ signs:
     output: true
     args:
       - 'sign-blob'
-      - '--key=finas.key'
+      - '--key=env://COSIGN_PRIVATE_KEY'
+      - '--yes'
       - '--output-signature=${signature}'
       - '${artifact}'
     artifacts: all
-
-docker_signs:
-  - cmd: cosign
-    artifacts: all
-    stdin: '{{ .Env.COSIGN_PASSWORD }}'
-    output: true
-    args:
-      - 'sign'
-      - '--key=finas.key'
-      - '${artifact}'
 
 milestones:
   - close: true

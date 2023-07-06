@@ -1,8 +1,6 @@
 package dcmd
 
 import (
-	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -10,17 +8,23 @@ import (
 	"strings"
 
 	"github.com/spf13/viper"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type DockerCmd struct {
-	Name           string   `json:"name"`
-	Tag            string   `json:"tag"`
-	Flags          []string `json:"flags,omitempty"`
-	Volumes        []string `json:"volumes,omitempty"`
-	BindMounts     []string `json:"bind_mounts,omitempty"`
-	Networks       []string `json:"networks,omitempty"`
-	PublishedPorts []string `json:"published_ports,omitempty"`
-	Arguments      []string `json:"arguments,omitempty"`
+	Name           string   `json:"name,omitempty" mapstructure:"name"`
+	Image          string   `json:"image" mapstructure:"image"`
+	Tag            string   `json:"tag" mapstructure:"tag"`
+	Flags          []string `json:"flags,omitempty" mapstructure:"flags"`
+	Volumes        []string `json:"volumes,omitempty" mapstructure:"volumes"`
+	BindMounts     []string `json:"bind_mounts,omitempty" mapstructure:"bind_mounts"`
+	Networks       []string `json:"networks,omitempty" mapstructure:"networks"`
+	PublishedPorts []string `json:"published_ports,omitempty" mapstructure:"published_ports"`
+	Entrypoint     string   `json:"entrypoint,omitempty" mapstructure:"entrypoint"`
+	Arguments      []string `json:"arguments,omitempty" mapstructure:"arguments"`
+	UserArguments  []string `json:"omitempty" mapstructure:"user_arguments"`
+	Help           string   `json:"help" mapstructure:"help"`
 }
 
 // Map to store the loaded DockerCmd structs
@@ -30,7 +34,7 @@ func cmdPaths(additionalPaths []string) ([]string, error) {
 	// setup list of paths where Docker Run cmd .json files could exist
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Println("Error:", err)
+		log.Error("Error getting user's home directory:", err)
 		return []string{}, err
 	}
 
@@ -50,21 +54,25 @@ func cmdPaths(additionalPaths []string) ([]string, error) {
 
 // LoadCmds loads Docker Run cmds from JSON files
 // located in cmdPaths in order of preference
-func LoadCmds(additionalPaths ...string) error {
+func LoadCmds(additionalPaths ...string) (map[string]DockerCmd, error) {
+	v := viper.GetViper()
 	CmdMap := make(map[string]DockerCmd)
-	v := viper.New()
+	if v.GetBool("debug") {
+		log.Print("From LoadCmds: Debug is enabled!")
+		log.SetLevel(log.DebugLevel)
+	}
 
 	directories, _ := cmdPaths(additionalPaths)
 
 	// Iterate over input directories
 	for _, dir := range directories {
-		files, err := ioutil.ReadDir(dir)
+		files, err := os.ReadDir(dir)
 		if err != nil {
 			if os.IsNotExist(err) {
-				fmt.Printf("Directory not found, continuing: %s\n", dir)
+				log.Debugf("Directory not found, continuing: %s\n", dir)
 				continue
 			} else {
-				fmt.Printf("Error reading directory '%s': %s\n", dir, err)
+				log.Errorf("Error reading directory '%s': %s\n", dir, err)
 				continue
 			}
 		}
@@ -77,29 +85,42 @@ func LoadCmds(additionalPaths ...string) error {
 				fileNameWithoutExt := fileName[:len(fileName)-len(filepath.Ext(fileName))]
 
 				// Set Viper to read the JSON file
+				v.SetConfigType("json")
 				v.SetConfigFile(filePath)
 
 				// Read the JSON file into the DockerImage struct
 				var cmd DockerCmd
 				err := v.ReadInConfig()
 				if err != nil {
-					fmt.Printf("Error reading JSON file '%s': %s\n", filePath, err)
+					log.Errorf("Error reading JSON file '%s': %s\n", filePath, err)
 					continue
 				}
 
 				err = v.Unmarshal(&cmd)
 				if err != nil {
-					fmt.Printf("Error parsing JSON file '%s': %s\n", filePath, err)
+					log.Errorf("Error parsing JSON file '%s': %s\n", filePath, err)
 					continue
 				}
+
+				// set the dcmd's Name field to the JSON filename without extension
+				cmd.Name = fileNameWithoutExt
 
 				// Store the loaded struct in the map at key based on filename
 				CmdMap[fileNameWithoutExt] = cmd
 			}
 		}
 	}
-	fmt.Printf("CmdMap currently contains: %v\n", CmdMap)
-	for key, cmd := range CmdMap {
+
+	if v.GetBool("debug") {
+		printCmdMap(CmdMap)
+	}
+
+	return CmdMap, nil
+}
+
+func printCmdMap(cmdMap map[string]DockerCmd) {
+	log.Debugf("CmdMap currently contains: %v\n", cmdMap)
+	for key, cmd := range cmdMap {
 		// Get the type of the struct
 		t := reflect.TypeOf(cmd)
 
@@ -108,9 +129,7 @@ func LoadCmds(additionalPaths ...string) error {
 			field := t.Field(i)
 			value := reflect.ValueOf(cmd).Field(i).Interface()
 
-			fmt.Printf("Key: %s, Field: %s, Type: %s, Value: %v\n", key, field.Name, reflect.TypeOf(field), value)
+			log.Debugf("Key: %s, Field: %s, Value: %v\n", key, field.Name, value)
 		}
 	}
-
-	return v.Unmarshal(&CmdMap)
 }

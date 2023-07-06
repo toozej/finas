@@ -1,0 +1,9 @@
+{
+    "image": "dpokidov/imagemagick",
+    "tag": "latest",
+    "flags": ["--rm"],
+    "bind_mounts": ["${PWD}/imgs:/imgs"],
+    "entrypoint": "mogrify",
+    "arguments": ["-format", "jpg", "/imgs/*.heic"],
+    "help": "Convert all .heic files in imgs/ directory to .jpg"
+}
