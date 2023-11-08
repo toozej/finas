@@ -6,6 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	_ "go.uber.org/automaxprocs"
 
 	"github.com/toozej/finas/internal/ccmdgen"
 	"github.com/toozej/finas/internal/dcmd"
