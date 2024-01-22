@@ -1,0 +1,9 @@
+{
+    "image": "ghcr.io/toozej/docker-dcraw",
+    "tag": "latest",
+    "flags": ["--rm", "-i"],
+    "bind_mounts": ["${PWD}/imgs:/imgs"],
+    "entrypoint": "/bin/bash",
+    "arguments": ["\"find /imgs -type f -name '*.NEF' -exec bash -c 'dcraw -c -w \"$0\" | pnmtojpeg > \"${0%.NEF}.jpg\"' {} \\;\""],
+    "help": "Convert all .NEF files in imgs/ directory to .jpg"
+}

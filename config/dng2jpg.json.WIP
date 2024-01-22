@@ -1,0 +1,9 @@
+{
+    "image": "ghcr.io/toozej/docker-dcraw",
+    "tag": "latest",
+    "flags": ["--rm", "-i"],
+    "bind_mounts": ["${PWD}/imgs:/imgs"],
+    "entrypoint": "/bin/bash",
+    "arguments": ["cd /imgs/ && for i in *.dng; do dcraw -c -w ${i} | pnmtojpeg > ${i//.dng/}.jpg; done"],
+    "help": "Convert all .dng files in imgs/ directory to .jpg"
+}

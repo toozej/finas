@@ -1,0 +1,8 @@
+{
+    "image": "jmaupetit/md2pdf",
+    "tag": "latest",
+    "flags": ["--rm"],
+    "bind_mounts": ["${PWD}:/app"],
+    "arguments": ["INPUT.md", "OUTPUT.pdf"],
+    "help": "Convert Markdown file (INTPUT.md) to PDF format (OUTPUT.pdf)"
+}

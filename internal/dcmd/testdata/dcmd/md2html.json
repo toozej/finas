@@ -1,0 +1,9 @@
+{
+    "image": "mbentley/grip",
+    "tag": "latest",
+    "flags": ["-i", "--rm"],
+    "bind_mounts": ["${PWD}:/data", "~/.grip:/.grip"],
+    "published_ports": ["8080:8080"],
+    "arguments": ["--context=username/repo README.md 0.0.0.0:8080"],
+    "help": "Display Markdown file as HTML webpage"
+}

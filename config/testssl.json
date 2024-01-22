@@ -1,0 +1,6 @@
+{
+    "image": "drwetter/testssl.sh",
+    "tag": "latest",
+    "flags": ["-i", "--rm"],
+    "help": "Test SSL/TLS ciphers, protocols for https://${URL_GOES_HERE}"
+}

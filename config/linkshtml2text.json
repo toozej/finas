@@ -1,0 +1,8 @@
+{
+    "image": "jess/lynx",
+    "tag": "latest",
+    "flags": ["-i", "--rm"],
+    "bind_mounts": ["${PWD}/export.html:/export.html"],
+    "arguments": ["-dump", "-listonly", "/export.html", ">", "links.txt"],
+    "help": "Extract links from HTML page (export.html) to plaintext file (links.txt)"
+}

@@ -1,0 +1,6 @@
+{
+    "image": "hello-world",
+    "tag": "latest",
+    "flags": ["--rm"],
+    "help": "hello world example"
+}
