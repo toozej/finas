@@ -35,7 +35,7 @@ endif
 
 .PHONY: all vet vendor test cover run release-test release sign verify release-verify install get-cosign-pub-key docker-login pre-commit-install pre-commit-run pre-commit pre-reqs update-golang-version docs docs-generate docs-serve clean help wiptest
 
-all: vendor update-deps vet pre-commit clean test cover build sign verify run ## Run default workflow using locally installed Golang toolchain
+all: update-deps vendor vet pre-commit clean test cover build sign verify run ## Run default workflow using locally installed Golang toolchain
 release-verify: release sign verify ## Release and verify using locally installed Golang toolchain
 pre-reqs: pre-commit-install ## Install pre-commit hooks and necessary binaries
 
@@ -119,7 +119,7 @@ pre-commit-install: ## Install pre-commit hooks and necessary binaries
 	# checkmake
 	go install github.com/mrtazz/checkmake/cmd/checkmake@latest
 	# goreleaser
-	go install github.com/goreleaser/goreleaser@latest
+	go install github.com/goreleaser/goreleaser/v2@latest
 	# syft
 	command -v syft || curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 	# cosign
