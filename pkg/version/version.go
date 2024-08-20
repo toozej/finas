@@ -1,10 +1,10 @@
 package version
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // Version information. These will be filled in by the compiler.
@@ -47,11 +47,14 @@ func Command() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			json, err := json.Marshal(info)
-			if err != nil {
-				return err
+
+			fmt.Println("Version: ", info.Version)
+			fmt.Println("Git commit: ", info.Commit)
+			fmt.Println("Built At: ", info.BuiltAt)
+			if viper.GetBool("debug") {
+				fmt.Println("Git Branch: ", info.Branch)
+				fmt.Println("Builder: ", info.Builder)
 			}
-			fmt.Println(string(json))
 
 			return nil
 		},

@@ -33,7 +33,7 @@ else
 	OPENER=open
 endif
 
-.PHONY: all vet vendor test cover run release-test release sign verify release-verify install get-cosign-pub-key docker-login pre-commit-install pre-commit-run pre-commit pre-reqs update-golang-version docs docs-generate docs-serve clean help wiptest
+.PHONY: all vet vendor test cover run release-test release sign verify release-verify install install-gh-release get-cosign-pub-key docker-login pre-commit-install pre-commit-run pre-commit pre-reqs update-golang-version docs docs-generate docs-serve clean help wiptest
 
 all: update-deps vendor vet pre-commit clean test cover build sign verify run ## Run default workflow using locally installed Golang toolchain
 release-verify: release sign verify ## Release and verify using locally installed Golang toolchain
@@ -97,6 +97,10 @@ verify: get-cosign-pub-key ## Verify locally compiled binary
 install: build verify ## Install compiled binary to local machine
 	sudo cp $(CURDIR)/finas /usr/local/bin/finas
 	sudo chmod 0755 /usr/local/bin/finas
+	mkdir ~/.config/finas/ && cp -r $(CURDIR)/config/*.json ~/.config/finas/
+
+install-gh-release: ## Install released binary from GitHub releases
+	go install github.com/toozej/finas/cmd/finas@latest
 	mkdir ~/.config/finas/ && cp -r $(CURDIR)/config/*.json ~/.config/finas/
 
 pre-commit: pre-commit-install pre-commit-run ## Install and run pre-commit hooks

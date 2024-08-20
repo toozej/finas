@@ -6,7 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	_ "go.uber.org/automaxprocs"
+	"go.uber.org/automaxprocs/maxprocs"
 
 	"github.com/toozej/finas/internal/ccmdgen"
 	"github.com/toozej/finas/internal/dcmd"
@@ -25,6 +25,13 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("To see available commands, run 'finas help'")
 	},
+}
+
+func init() {
+	_, err := maxprocs.Set()
+	if err != nil {
+		log.Error("Error setting maxprocs: ", err)
+	}
 }
 
 func main() {

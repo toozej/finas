@@ -37,8 +37,8 @@ builds:
     flags:
       - -trimpath
     ldflags:
-      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{ .CommitDate
-        }} -X main.builtBy=goreleaser
+      - -s -w -X github.com/toozej/finas/pkg/version.Version={{.Version}} -X github.com/toozej/finas/pkg/version.Commit={{.Commit}}
+        -X github.com/toozej/finas/pkg/version.BuiltAt={{.CommitDate}} -X github.com/toozej/finas/pkg/version.Builder=goreleaser
     main: ./cmd/finas/
     binary: finas
 
