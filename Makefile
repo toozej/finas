@@ -25,13 +25,24 @@ LDFLAGS = -s -w \
 	-X $(VER).Branch=$(or $(BRANCH),unknown) \
 	-X $(VER).BuiltAt=$(NOW) \
 	-X $(VER).Builder=$(BUILDER)
-	
-OS = $(shell uname -s)
+
+# Define the repository URL
+REPO_URL := https://github.com/toozej/finas
+
+# Detect the OS and architecture
+OS := $(shell uname -s)
+ARCH := $(shell uname -m)
+
+# Construct the download URL for the latest release
+LATEST_RELEASE_URL := $(REPO_URL)/releases/latest/download/finas_$(OS)_$(ARCH).tar.gz
+
+# Set opener based on OS
 ifeq ($(OS), Linux)
 	OPENER=xdg-open
 else
 	OPENER=open
 endif
+
 
 .PHONY: all vet vendor test cover run release-test release sign verify release-verify install install-gh-release get-cosign-pub-key docker-login pre-commit-install pre-commit-run pre-commit pre-reqs update-golang-version docs docs-generate docs-serve clean help wiptest
 
@@ -100,8 +111,14 @@ install: build verify ## Install compiled binary to local machine
 	mkdir ~/.config/finas/ && cp -r $(CURDIR)/config/*.json ~/.config/finas/
 
 install-gh-release: ## Install released binary from GitHub releases
-	go install github.com/toozej/finas/cmd/finas@latest
-	mkdir ~/.config/finas/ && cp -r $(CURDIR)/config/*.json ~/.config/finas/
+	echo "Downloading finas binary for $(OS)-$(ARCH)..."
+	mkdir -p $(CURDIR)/tmp
+	curl --silent -L -o $(CURDIR)/tmp/finas.tgz $(LATEST_RELEASE_URL)
+	tar -xzf $(CURDIR)/tmp/finas.tgz -C $(CURDIR)/tmp/
+	chmod +x $(CURDIR)/tmp/finas
+	sudo mv $(CURDIR)/tmp/finas /usr/local/bin/finas
+	rm -rf $(CURDIR)/tmp
+	mkdir -p ~/.config/finas/ && cp -r $(CURDIR)/config/*.json ~/.config/finas/
 
 pre-commit: pre-commit-install pre-commit-run ## Install and run pre-commit hooks
 
