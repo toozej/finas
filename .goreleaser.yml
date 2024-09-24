@@ -39,7 +39,7 @@ builds:
     ldflags:
       - -s -w -X github.com/toozej/finas/pkg/version.Version={{.Version}} -X github.com/toozej/finas/pkg/version.Commit={{.Commit}}
         -X github.com/toozej/finas/pkg/version.BuiltAt={{.CommitDate}} -X github.com/toozej/finas/pkg/version.Builder=goreleaser
-    main: ./cmd/finas/
+    main: ./
     binary: finas
 
 universal_binaries:

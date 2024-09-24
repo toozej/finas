@@ -51,9 +51,9 @@ release-verify: release sign verify ## Release and verify using locally installe
 pre-reqs: pre-commit-install ## Install pre-commit hooks and necessary binaries
 
 wiptest: build ## TODO remove wiptest
-	$(CURDIR)/finas --debug helloworld
-	rm -f htpasswdFileName && $(CURDIR)/finas --debug htpasswd username password > htpasswdFileName
-	$(CURDIR)/finas --debug helloworld "some shit goes here"
+	$(CURDIR)/out/finas --debug helloworld
+	rm -f htpasswdFileName && $(CURDIR)/out/finas --debug htpasswd username password > htpasswdFileName
+	$(CURDIR)/out/finas --debug helloworld "some shit goes here"
 
 get-cosign-pub-key: ## Get finas Cosign public key from GitHub
 	test -f $(CURDIR)/finas.pub || curl --silent https://raw.githubusercontent.com/toozej/finas/main/finas.pub -O
@@ -77,11 +77,11 @@ cover: ## View coverage report in web browser
 	go tool cover -html=c.out
 
 build: ## Run `go build` using locally installed golang toolchain
-	CGO_ENABLED=0 go build -ldflags="$(LDFLAGS)" $(CURDIR)/cmd/finas/
+	CGO_ENABLED=0 go build -o $(CURDIR)/out/ -ldflags="$(LDFLAGS)"
 
 run: ## Run locally built binary
-	$(CURDIR)/finas help
-	$(CURDIR)/finas --debug helloworld
+	$(CURDIR)/out/finas help
+	$(CURDIR)/out/finas --debug helloworld
 
 release-test: ## Build assets and test goreleaser config using locally installed golang toolchain and goreleaser
 	goreleaser check
@@ -96,17 +96,17 @@ release: test docker-login ## Release assets using locally installed golang tool
 
 sign: test ## Sign locally installed golang toolchain and cosign
 	if test -e $(CURDIR)/finas.key && test -e $(CURDIR)/.env; then \
-		export `cat $(CURDIR)/.env | xargs` && cosign sign-blob --key=$(CURDIR)/finas.key --output-signature=$(CURDIR)/finas.sig $(CURDIR)/finas; \
+		export `cat $(CURDIR)/.env | xargs` && cosign sign-blob --key=$(CURDIR)/finas.key --output-signature=$(CURDIR)/finas.sig $(CURDIR)/out/finas; \
 	else \
 		echo "no cosign private key found at $(CURDIR)/finas.key. Cannot release."; \
 	fi
 
 verify: get-cosign-pub-key ## Verify locally compiled binary
 	# cosign here assumes you're using Linux AMD64 binary
-	cosign verify-blob --key $(CURDIR)/finas.pub --signature $(CURDIR)/finas.sig $(CURDIR)/finas
+	cosign verify-blob --key $(CURDIR)/finas.pub --signature $(CURDIR)/finas.sig $(CURDIR)/out/finas
 
 install: build verify ## Install compiled binary to local machine
-	sudo cp $(CURDIR)/finas /usr/local/bin/finas
+	sudo cp $(CURDIR)/out/finas /usr/local/bin/finas
 	sudo chmod 0755 /usr/local/bin/finas
 	mkdir ~/.config/finas/ && cp -r $(CURDIR)/config/*.json ~/.config/finas/
 
@@ -177,7 +177,7 @@ docs-serve: ## Serve documentation on http://localhost:9000
 	@echo "docker kill finas-docs-serve"
 
 clean: ## Remove any locally compiled binaries
-	rm -f $(CURDIR)/finas
+	rm -f $(CURDIR)/out/finas
 
 help: ## Display help text
 	@grep -E '^[a-zA-Z_-]+ ?:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

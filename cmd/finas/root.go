@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -34,7 +34,7 @@ func init() {
 	}
 }
 
-func main() {
+func Execute() {
 	v = viper.GetViper()
 	// setup debug flag
 	rootCmd.PersistentFlags().BoolP("debug", "d", false, "Enable debug-level logging")
