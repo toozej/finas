@@ -24,7 +24,7 @@ mkdir ~/.config/finas && cp configs/*.json ~/.config/finas/
 Development tasks such as building, testing, and releasing are all `make` driven. Type `make` to see a list of available tasks.
 
 ### changes required to update golang version
-- run `./scripts/update_golang_version.sh $NEW_VERSION_GOES_HERE`
+- `make update-golang-version` 
 
 ## Inspiration
 [GNU](https://www.gnu.org/gnu/about-gnu.html) + [thefuck](https://github.com/nvbn/thefuck) = FINAS, or `f` for short.
