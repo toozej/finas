@@ -1,4 +1,10 @@
 # finas
+
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/toozej/finas)
+[![Go Report Card](https://goreportcard.com/badge/github.com/toozej/finas)](https://goreportcard.com/report/github.com/toozej/finas)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/toozej/finas/cicd.yaml)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/toozej/finas/total)
+
 FINAS Is Not A Shell
 
 ## About
